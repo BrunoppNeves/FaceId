@@ -1,23 +1,20 @@
-const Sequelize = require("sequelize");
+const { Sequelize } = require("sequelize");
 const dotenv = require("dotenv");
 dotenv.config({ path: ".env" });
-
-const sequelize = new Sequelize({
+console.log(process.env.DB_USERNAME);
+const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
+  host: "172.27.0.2",
+  port: "3306",
   dialect: "mysql",
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
 });
 
 sequelize
-  .sync()
-  .then(async () => {
-    console.log("Database & tables created!");
+  .query("CREATE DATABASE IF NOT EXISTS atenas;")
+  .then(() => {
+    // código para iniciar o servidor Express
   })
-  .catch((error) => {
-    console.log("Error creating database & tables:", error);
+  .catch((err) => {
+    console.error("Erro ao criar o banco de dados:", err);
   });
 
 module.exports = sequelize;

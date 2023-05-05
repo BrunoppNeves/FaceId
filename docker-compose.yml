@@ -1,24 +1,32 @@
 version: "3"
 services:
   api:
-    build: .
     container_name: api_atenas
+    build: .
     restart: "always"
     ports:
       - "8081:8081"
     depends_on:
       - db
+    networks:
+      - external-proxy_external-network
 
   db:
     container_name: db_atenas
     image: mysql:latest
+    restart: "always"
     environment:
-      MYSQL_ROOT_PASSWORD: 12345678
       MYSQL_DATABASE: atenas
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: 12345678
+      MYSQL_USER: atenas
+      MYSQL_PASSWORD: atenas
+      MYSQL_ROOT_PASSWORD: atenas
+    volumes:
+      - "/var/run/mysql:/var/run/mysql"
     ports:
-      - "3307:3307"
+      - "3306:3306"
+    networks:
+      - external-proxy_external-network
 
-volumes:
-  dbdata:
+networks:
+  external-proxy_external-network:
+    external: true
